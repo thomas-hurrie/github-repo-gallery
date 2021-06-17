@@ -4,10 +4,14 @@ const overview = document.querySelector(".overview");
 const username = "thomas-hurrie";
 //select repos list
 const repoList = document.querySelector(".repo-list");
-//select repos section
+//repos section
 const reposSection = document.querySelector(".repos");
-//seclt repo data section
+//repo data section
 const reposDataSection = document.querySelector(".repo-data");
+//back to repo gallery button
+const backButton = document.querySelector(".view-repos");
+//search bar field
+const filterInput = document.querySelector(".filter-repos");
 
 //fetch info from github profile
 const getGit = async function () {
@@ -44,8 +48,9 @@ const displayUserInfo = function (data) {
   };
 
   const displayRepos = function (repos) {
-      for (const repo of repos) {
-          const repoItem = document.createElement("li");
+      filterInput.classList.remove("hide");
+      for (let repo of repos) {
+          let repoItem = document.createElement("li");
           repoItem.classList.add("repo");
           repoItem.innerHTML = `<h3>${repo.name}</h3>`;
           repoList.append(repoItem);
@@ -79,6 +84,7 @@ const displayUserInfo = function (data) {
       reposDataSection.innerHTML = "";
       reposDataSection.classList.remove("hide");
       reposSection.classList.add("hide");
+      backButton.classList.remove("hide");
       const div = document.createElement("div");
       div.innerHTML =   `
         <h3>Name: ${repoInfo.name}</h3>
@@ -89,3 +95,23 @@ const displayUserInfo = function (data) {
         `;
         reposDataSection.append(div);
   };
+
+  backButton.addEventListener("click", function () {
+      reposSection.classList.remove("hide");
+      reposDataSection.classList.add("hide");
+      backButton.classList.add("hide");
+  });
+
+filterInput.addEventListener("input", function(e) {
+    const searchInput = e.target.value;
+    const repos = document.querySelectorAll(".repo");
+    const toLowerSearch = searchInput.toLowerCase();
+    for (repo of repos) {
+        const toLowerRepo = repo.innerText.toLowerCase();
+        if (toLowerRepo.includes(toLowerSearch)) {
+            repo.classList.remove("hide");
+        } else {
+            repo.classList.add("hide");
+        }
+    }
+});
